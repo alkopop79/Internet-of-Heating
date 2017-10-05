@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script>
+jQuery.support.cors = true;
+$(document).ready(function(){
+  $("#radio1").click(function(){
+    $.ajax({url:"https://agent.electricimp.com/4ErFq0G1DJrP?led=1",success:function(result){
+      $("#div1").html(result);
+        var jsonObj = JSON.parse(http_request.responseText);
+        console.log("ON "+jsonObj);
+    }});
+  });
+$("#radio2").click(function(){
+  $.ajax({url:"https://agent.electricimp.com/4ErFq0G1DJrP?led=0",success:function(result){
+      $("#div1").html(result);
+      var jsonObj = JSON.parse(http_request.responseText);
+      console.log("OFF "+jsonObj);
+    }});
+  });
+});
+</script>
+</head>
+<body>
+
+<form>
+  <div id="radio">
+    <input type="radio" id="radio1" name="radio"><label for="radio1">OFF</label>
+    <input type="radio" id="radio2" name="radio" checked="checked"><label for="radio2">ON</label>
+    
+  </div>
+</form>
+</body>
+</html>

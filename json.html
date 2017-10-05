@@ -1,0 +1,123 @@
+<html>
+    <head>
+        <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
+ 
+        <script type="application/javascript">
+            function loadJSON()
+            {
+                var data_file = "https://agent.electricimp.com/4ErFq0G1DJrP"; //Insert link to your Agent here
+                var http_request = new XMLHttpRequest();
+                try
+                {
+                    // Opera 8.0+, Firefox, Chrome, Safari
+                    http_request = new XMLHttpRequest();
+                }
+                catch (e)
+                {
+                    // Internet Explorer Browsers
+                    try
+                    {
+                        http_request = new ActiveXObject("Msxml2.XMLHTTP");
+                    }
+                    catch (e)
+                    {
+                        try
+                        {
+                            http_request = new ActiveXObject("Microsoft.XMLHTTP");
+                        }
+                        catch (e)
+                        {
+                            alert("Something went wrong. :/");
+                            return false;
+                        }
+                    }
+                }
+ 
+                http_request.onreadystatechange = function()
+                {
+                    if (http_request.readyState == 4)
+                    {
+                        if (http_request.status == 200)
+                        {
+                            var jsonObj = JSON.parse(http_request.responseText);
+ 
+                            if(jsonObj.coreInfo.connected)
+                            {
+                                document.getElementById("device").innerHTML =  jsonObj.coreInfo.deviceID;
+                                document.getElementById("function").innerHTML =  jsonObj.name;
+                                document.getElementById("result").innerHTML = Math.round((jsonObj.result/65535) * 100) + "%";
+                            }
+                            else
+                            {
+                                document.getElementById("device").innerHTML =  "offline";
+                                document.getElementById("function").innerHTML =  "&nbsp;";
+                                document.getElementById("result").innerHTML = "&nbsp;";
+                            }
+                        }
+ 
+                        setTimeout("loadJSON()", 1000);
+                    }
+                }
+ 
+                http_request.open("GET", data_file, true);
+                http_request.send();
+            }
+ 
+            window.onload=function()
+            {
+                loadJSON();
+            };
+        </script>
+ 
+        <style>
+            #devices
+            {
+                font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+                width:700px;
+                border-collapse:collapse;
+            }
+ 
+            #devices td, #devices th
+            {
+                font-size:1.2em;
+                border:1px solid #98bf21;
+                padding:3px 7px 2px 7px;
+            }
+ 
+            #devices th
+            {
+                font-size:1.4em;
+                text-align:left;
+                padding-top:5px;
+                padding-bottom:4px;
+                background-color:#A7C942;
+                color:#fff;
+            }
+        </style>
+ 
+        <title>Electric IMP and JSON</title>
+    </head>
+ 
+    <body>
+        <h1>Electric IMP and JSON</h1>
+ 
+        <table id="devices" class="devices">
+            <tr>
+                <th width="300px">Device</th>
+                <th width="200px">Function</th>
+                <th>Result</th>
+            </tr>
+            <tr>
+                <td>
+                    <div id="device">&nbsp;</div>
+                </td>
+                <td>
+                    <div id="function">&nbsp;</div>
+                </td>
+                <td>
+                    <div id="result">&nbsp;</div>
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

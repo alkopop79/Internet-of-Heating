@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<p id="demo"></p>
+
+<script>
+http_request.onreadystatechange = function() {
+        if (http_request.readyState == 4) {
+            if (http_request.status == 200) {
+                pinState(http_request.responseText);
+                document.getElementById("demo").innerHTML = pinstate;
+
+            }
+            setTimeout("loadJSON()", 1000);
+        }
+    }
+
+    http_request.open("GET", data_file, true);
+    http_request.send();
+}
+
+</script>
+
+<p>stuff</p>
+
+</body>
+</html>

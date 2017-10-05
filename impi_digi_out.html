@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <link rel="apple-touch-startup-image" media="(device-width: 320px)" href="cc_startup.png" />
+    <link rel="apple-touch-icon" href="cc_screen_icon.png" />     
+    <title>IMP</title>
+    <link rel="stylesheet" href="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.css" />
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="http://code.jquery.com/mobile/1.3.1/jquery.mobile-1.3.1.min.js"></script>
+    <script>
+    $( function() {   
+         // Get the Agent external URl from HTML5 local storage
+         var externalURL ="";
+         if (localStorage["agentURL"]) {
+          externalURL=localStorage["agentURL"];
+         } 
+        
+        // Bind to slider events 
+        $("[data-role=slider]").bind( "change", function(event, ui) {
+          var slider_value = $(this).slider().val();
+          //console.log(this.id,slider_value);
+          impSetValue(this.id,slider_value);
+        });
+ 
+        function impSetValue(_pin,_slider_value){
+          // Build the json      
+          var obj = {};
+          pinID = ""+_pin+"";
+          obj[pinID] = _slider_value;
+          agentActions = JSON.stringify(obj); 
+          console.log("agentActions:"+ agentActions); 
+          // POST to Agent         
+          $.ajax({
+              type: "POST",                                
+              url: "https://agent.electricimp.com/4ErFq0G1DJrP", 
+              data: agentActions,
+              contentType: "application/json; charset=utf-8",
+              dataType: "json", 
+              complete: function(jqXHR, textStatus){
+                _header= jqXHR.getResponseHeader("AgentResponce");
+                console.log("textStatus: "+jqXHR.responseText+" AgentResponce:"+_header);
+                polling = false;
+              }
+          });
+        }     
+    });
+    </script>
+    <style> 
+    @media only screen and (min-width: 321px){
+     #c1 {width: 390px !important;  margin:0 !important; position: relative !important;}
+     #h1 {width: 420px !important;  margin:0 !important; position: relative !important;}
+    }
+    .ui-li {list-style-position:inside !important;}
+    .ui-li h3 {margin:0 0 0 135px; padding:0; width: 50%; }
+    .ui-li p { padding-top: 20px; border:0px solid blue;}
+     p.dev { padding-top: 10px; border:0px solid blue;}
+     p.msg { padding: 0px 0 0 115px; overflow: visible; white-space:  pre-wrap; 0}
+    .ui-li p span{ padding-left: 81px;}
+    .ui-li-thumb {height:80px !important;  left: 140px !important;  right : auto; padding:0; opacity:0.6;}
+     label {display: block; float:left;  width:100px; text-align:left; padding-top: 12px; xborder:1px solid red; }
+    </style>
+</head>
+<body>
+<div data-role="page" id="aprilDigitalOUT"><!-- Home -->
+  <div data-theme="a" data-role="header">
+    <h3 style="margin-left: 38px; text-align:left"><span style="font-size:0.86em; padding:0 14px 0 0; color:#909090;">T2: April Digital Out</span></h3>
+    <a href="options.html" data-role="button" data-inline="false" data-icon="gear" data-iconpos="notext" data-iconshadow="false" data-rel="dialog">Agent External URL</a>
+  </div>       
+  <div data-role="content" id="DOUT">
+     <div data-role="fieldcontain" style="width:320px" style="font-size:4.0em;">   
+      <label for="pin5">HEATING</label>
+      <select id="pin5" data-role="slider" >
+        <option value="ON">Off</option>
+        <option value="OFF">On</option>
+      </select>   
+     </div>
+   </div>   <!-- Eof content -->
+</div>      <!-- Eof JQM page -->
+</body>
+</html>
