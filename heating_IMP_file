@@ -1,0 +1,37 @@
+globalPinstate <-0; //send state of one of the pins to indicate relay state
+
+server.log("Turn HEATING On: " + http.agenturl() + "?led=1");
+server.log("Turn HEATING Off: " + http.agenturl() + "?led=0");
+
+function requestHandler(request, response) {
+  try {
+  response.header ("Access-Control-Allow-Origin", "*");
+  response.header("Access-Control-Allow-Headers", "Content-Type, Content-length");
+
+    if ("led" in request.query) {
+      
+      // if they did, and led=1.. set our variable to 1
+      if (request.query.led == "1" || request.query.led == "0") {
+        // convert the led query parameter to an integer
+        local ledState = request.query.led.tointeger();
+ 
+        // send "led" message to device, and send ledState as the data
+        device.send("led", ledState); 
+      }
+    }
+    // send a response back saying everything was OK.
+    response.send(200, globalPinstate);
+    //server.log("SG");
+  } catch (ex) {
+    response.send(500, "Internal Server Error: " + ex);
+  }
+}
+function incoming(pinState){
+globalPinstate = pinState;
+server.log("pin state: "+globalPinstate); //make pinState accesible locally
+}
+device.on("ledState", incoming); //send pinState
+ 
+// register the HTTP handle
+http.onrequest(requestHandler);
+
