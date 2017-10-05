@@ -1,0 +1,51 @@
+//for latching relay
+
+leda <- hardware.pin9;
+leda.configure(DIGITAL_OUT);
+ledb <- hardware.pin8;
+ledb.configure(DIGITAL_OUT);
+
+stillOn <- false;
+
+
+function setLed(ledState) {
+   //server.log("Set LED: " + ledState);
+   if(ledState == 0) {
+      stillOn = true;
+      timer0();
+      //server.log("timer ON");
+      pinState();
+   
+   } 
+   else {
+      stillOn = false;
+      leda.write(0); 
+      ledb.write(1);
+      //log("OFF");
+      pinState();
+   }
+}
+
+function timer0(){
+   if(stillOn) {
+      leda.write(1); 
+      ledb.write(0); 
+      imp.wakeup(300,timer1);
+      //server.log("ON");
+   }
+}
+
+function timer1(){
+   if(stillOn) {
+      leda.write(0); 
+      ledb.write(1);
+      imp.wakeup(1500,timer0);
+      //server.log("OFF");
+   }
+}
+
+function pinState(){
+agent.send("ledState",ledb.read());
+}
+
+agent.on("led", setLed);
